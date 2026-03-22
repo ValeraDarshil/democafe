@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe — Premium Coffee Experience</title>
+    <meta name="description" content="Experience handcrafted coffee moments at Cafe. Premium espresso, artisan latte art, and luxury café atmosphere.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">Cafe</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#coffee">Our Coffee</a></li>
+                <li><a href="#bakery">Bakery</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#signature">Signature</a></li>
+                <li><a href="#visit" class="nav-cta">Visit Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Scroll Animation -->
+    <section class="hero-scroll-container" id="hero">
+        <div class="hero-sticky">
+            <canvas id="heroCanvas"></canvas>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">— Est. 2024 —</p>
+                <h1 class="hero-title">Cafe</h1>
+                <p class="hero-subtitle">Experience handcrafted coffee moments</p>
+                <div class="hero-scroll-hint">
+                    <span>Scroll to explore</span>
+                    <div class="scroll-arrow">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 5v14M5 12l7 7 7-7"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-progress">
+                <div class="hero-progress-bar" id="heroProgressBar"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Coffee Section -->
+    <section class="section section-coffee" id="coffee">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Our Coffee</p>
+                <h2 class="section-title">Crafted to<br><em>Perfection</em></h2>
+                <p class="section-desc">Every cup is a masterpiece — meticulously sourced, skillfully roasted, and artfully prepared.</p>
+            </div>
+            <div class="coffee-grid">
+                <div class="coffee-card reveal" style="--delay: 0.1s">
+                    <div class="coffee-card-image">
+                        <img src="images/espresso.png" alt="Premium Espresso" loading="lazy">
+                        <div class="coffee-card-badge">Classic</div>
+                    </div>
+                    <div class="coffee-card-content">
+                        <h3>Espresso</h3>
+                        <p>Bold, rich, and velvety. Our signature espresso is pulled to perfection with a thick golden crema.</p>
+                        <div class="coffee-card-meta">
+                            <span class="coffee-origin">Single Origin · Ethiopia</span>
+                            <span class="coffee-price">$4.50</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="coffee-card reveal" style="--delay: 0.25s">
+                    <div class="coffee-card-image">
+                        <img src="images/cappuccino.png" alt="Artisan Cappuccino" loading="lazy">
+                        <div class="coffee-card-badge">Popular</div>
+                    </div>
+                    <div class="coffee-card-content">
+                        <h3>Cappuccino</h3>
+                        <p>Silky microfoam and bold espresso unite in a delicate balance. Finished with intricate latte art.</p>
+                        <div class="coffee-card-meta">
+                            <span class="coffee-origin">House Blend · Colombia</span>
+                            <span class="coffee-price">$5.50</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="coffee-card reveal" style="--delay: 0.4s">
+                    <div class="coffee-card-image">
+                        <img src="images/latte.png" alt="Silky Latte" loading="lazy">
+                        <div class="coffee-card-badge">Smooth</div>
+                    </div>
+                    <div class="coffee-card-content">
+                        <h3>Caffè Latte</h3>
+                        <p>Smooth, creamy, and comforting. Lush steamed milk cascading over our signature espresso blend.</p>
+                        <div class="coffee-card-meta">
+                            <span class="coffee-origin">Artisan Blend · Brazil</span>
+                            <span class="coffee-price">$5.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fresh Bakery Section -->
+    <section class="section section-bakery" id="bakery">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Fresh Bakery</p>
+                <h2 class="section-title">Baked with<br><em>Passion</em></h2>
+                <p class="section-desc">Handmade daily by our pastry artisans using the finest European butter and organic flour.</p>
+            </div>
+            <div class="bakery-grid">
+                <div class="bakery-item reveal" style="--delay: 0.1s">
+                    <div class="bakery-image">
+                        <img src="images/croissant.png" alt="Butter Croissant" loading="lazy">
+                    </div>
+                    <div class="bakery-info">
+                        <h3>Butter Croissant</h3>
+                        <p>72-hour fermented dough, 84 flaky layers</p>
+                        <span class="bakery-price">$3.50</span>
+                    </div>
+                </div>
+                <div class="bakery-item reveal" style="--delay: 0.25s">
+                    <div class="bakery-image">
+                        <img src="images/cake.png" alt="Chocolate Layer Cake" loading="lazy">
+                    </div>
+                    <div class="bakery-info">
+                        <h3>Chocolate Gâteau</h3>
+                        <p>Belgian dark chocolate, caramel ganache drizzle</p>
+                        <span class="bakery-price">$6.50</span>
+                    </div>
+                </div>
+                <div class="bakery-item reveal" style="--delay: 0.4s">
+                    <div class="bakery-image">
+                        <img src="images/pastry.png" alt="Berry Danish Pastry" loading="lazy">
+                    </div>
+                    <div class="bakery-info">
+                        <h3>Berry Danish</h3>
+                        <p>Vanilla crème pâtissière, seasonal berries</p>
+                        <span class="bakery-price">$4.50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Menu Section -->
+    <section class="section section-menu" id="menu">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Our Menu</p>
+                <h2 class="section-title">Explore Our<br><em>Flavors</em></h2>
+                <p class="section-desc">Flip through our curated menu — crafted with passion and the finest ingredients.</p>
+            </div>
+            <div class="flipbook-wrapper reveal" style="--delay: 0.2s">
+                <div class="flipbook-container" id="flipbook">
+                    <!-- Page 1: Front Cover -->
+                    <div class="menu-page menu-page-cover" data-density="hard">
+                        <div class="menu-page-inner cover-content">
+                            <span class="cover-icon">☕</span>
+                            <h2 class="cover-title">Cafe</h2>
+                            <div class="cover-divider"></div>
+                            <p class="cover-subtitle">Our Menu</p>
+                        </div>
+                    </div>
+
+                    <!-- Page 2: Appetizers -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Appetizers</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Cheese Fondue</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹450</span>
+                                    </div>
+                                    <p class="item-desc">Melted cheese sauce served with breads, grilled veggies, ganache</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Oriental Noodles</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                    <p class="item-desc">Hakka style noodles with oriental veggies</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Kung Pao Paneer</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                    <p class="item-desc">Crispy coated paneer tossed in sweet spicy asian kung pao sauce</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Hummus Platter</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                    <p class="item-desc">Chickpea hummus served with veggies, crackers and pita bread</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 3: Appetizers II -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Appetizers</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Classic Fries</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹250</span>
+                                    </div>
+                                    <p class="item-desc">Crispy golden fries</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Truffle Fries</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                    <p class="item-desc">Crispy golden fries finished with truffle essence</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Grande Nachos</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                    <p class="item-desc">Towering tortilla chips loaded with melty mozzarella, olives, beans, veggies</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Bruschetta con Crema di Formaggio</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹300</span>
+                                    </div>
+                                    <p class="item-desc">Toasted artisan bread slathered in herb cream cheese, topped with cherry tomatoes and micro greens</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 4: Soups -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Soups</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Funghi Cremosi</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹280</span>
+                                    </div>
+                                    <p class="item-desc">A creamy blend of sauteed mushrooms with a hint of thyme and truffle oil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Holiday Broccoli Almond</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹320</span>
+                                    </div>
+                                    <p class="item-desc">Broccoli blended into coconut cream and almonds</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Pappa al Pomodoro</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹290</span>
+                                    </div>
+                                    <p class="item-desc">Thick Tuscan tomato and bread soup with basil and olive oil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Zuppa di Cipolle</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹280</span>
+                                    </div>
+                                    <p class="item-desc">Silky caramelized onions in savory veg broth</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 4: Salads -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Salads</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Caprese Salad</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹450</span>
+                                    </div>
+                                    <p class="item-desc">Simple Italian salad with fresh mozzarella, ripe tomatoes, basil, olive oil, and salt</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Caesar Salad</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹320</span>
+                                    </div>
+                                    <p class="item-desc">Crisp romaine lettuce and croutons with garlicky Parmesan cheese and lemon</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Chickpea Hummus</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹390</span>
+                                    </div>
+                                    <p class="item-desc">Mediterranean-style salad with chickpeas, fresh vegetables, and hummus</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Avocado &amp; Corn</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                    <p class="item-desc">Fresh avocado and corn tossed in lime juice with onion and tomatoes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 5: Pasta -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Pasta</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Alfredo (Penne / Spaghetti)</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹550</span>
+                                    </div>
+                                    <p class="item-desc">Alfredo sauce mixed with choice of penne or spaghetti</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Arabiata (Penne / Spaghetti)</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹450</span>
+                                    </div>
+                                    <p class="item-desc">Spicy marinara sauce mixed with choice of penne or spaghetti</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Aglio e Olio</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹500</span>
+                                    </div>
+                                    <p class="item-desc">Spaghetti tossed in extra-virgin olive oil with garlic</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Pesto</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹550</span>
+                                    </div>
+                                    <p class="item-desc">Spaghetti coated in vibrant basil pesto sauce with fresh basil, pine nuts, garlic</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Fettuccini Truffle Mushrooms</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹600</span>
+                                    </div>
+                                    <p class="item-desc">Fettuccine in a velvety sauce of sautéed mushrooms, truffle butter, heavy cream, parmesan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 7: Pasta II -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Pasta</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Lasagna</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹750</span>
+                                    </div>
+                                    <p class="item-desc">Flat sheet pasta cooked with exotic veggies, marinara sauce, spinach sauce and lots of cheese</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Mix Sauce</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹450</span>
+                                    </div>
+                                    <p class="item-desc">Spicy marinara sauce mixed with creamy alfredo sauce</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 8: Pizza I -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Pizza</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Margarita</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹450</span>
+                                    </div>
+                                    <p class="item-desc">San Marzano sauce, cheese, basil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Funghi</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹550</span>
+                                    </div>
+                                    <p class="item-desc">Sauce, mozzarella, wild mushrooms, truffle oil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Mushroom Truffle</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹620</span>
+                                    </div>
+                                    <p class="item-desc">Alfredo sauce mixed with truffle paste and mushrooms</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Spiced Paneer</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹570</span>
+                                    </div>
+                                    <p class="item-desc">Sauce, mozzarella, paneer, golden corn, chilly</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 7: Pizza II -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Pizza</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Quattro Stagioni</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹600</span>
+                                    </div>
+                                    <p class="item-desc">Tomato, mozzarella, mushrooms, jalapeno, bell peppers, olives</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Pesto Verde</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹580</span>
+                                    </div>
+                                    <p class="item-desc">Pesto, mozzarella, cherry tomatoes</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Farm Fresh</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹600</span>
+                                    </div>
+                                    <p class="item-desc">Tomato, mozzarella, mushrooms, jalapeno, bell peppers, olives, broccoli, onions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 8: Breads -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Breads</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Cheese Garlic Bread</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹320</span>
+                                    </div>
+                                    <p class="item-desc">Garlic butter, mozzarella, olive oil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Sun Dried Tomatoes &amp; Mushrooms</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                    <p class="item-desc">Sun dried tomatoes, mushrooms, olives and mozzarella, olive oil</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Pesto and Olives</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹390</span>
+                                    </div>
+                                    <p class="item-desc">Pesto paste, olives, mozzarella</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Fresh Farm Veggies</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹400</span>
+                                    </div>
+                                    <p class="item-desc">Fresh veggies, mozzarella</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 9: Coffee -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Coffee</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Affogato</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹240</span>
+                                    </div>
+                                    <p class="item-desc">Espresso over coconut flavoured ice cream</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Mocha Mania</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                    <p class="item-desc">Caffè mocha, espresso-based drink with chocolate and steamed milk</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Vietnamese Coffee</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹280</span>
+                                    </div>
+                                    <p class="item-desc">Strong drip-brewed coffee sweetened with condensed milk</p>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Coffee Frappe</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Hot Chocolate</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹300</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 10: Refreshers I -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Refreshers</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Mint Mojito</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹250</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Orange Basil</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Berry Mojito</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹420</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Ginger Lime Fizz</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹340</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 11: Refreshers II -->
+                    <div class="menu-page">
+                        <div class="menu-page-inner">
+                            <h3 class="menu-category">Refreshers</h3>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Coconut Lime Cucumber</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹250</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Pomegranate Bliss</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Orange Espresso Tonic</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Soft Drinks</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                                <div class="menu-item">
+                                    <div class="menu-item-row">
+                                        <span class="item-name">Redbull</span>
+                                        <span class="item-dots"></span>
+                                        <span class="item-price">₹360</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 12: Back Cover -->
+                    <div class="menu-page menu-page-cover" data-density="hard">
+                        <div class="menu-page-inner cover-content">
+                            <span class="cover-icon">☕</span>
+                            <p class="cover-subtitle">Cafe</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flipbook Navigation -->
+                <div class="flipbook-nav">
+                    <button class="flip-btn" id="flipPrev" aria-label="Previous page">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <span class="flip-page-info" id="flipPageInfo">1 / 14</span>
+                    <button class="flip-btn" id="flipNext" aria-label="Next page">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coffee Experience Section -->
+    <section class="section section-experience" id="experience">
+        <div class="container">
+            <div class="experience-layout">
+                <div class="experience-image reveal">
+                    <img src="images/cafe_atmosphere.png" alt="Our Café Atmosphere" loading="lazy">
+                    <div class="experience-image-accent"></div>
+                </div>
+                <div class="experience-content reveal" style="--delay: 0.2s">
+                    <p class="section-eyebrow">The Experience</p>
+                    <h2 class="section-title">Where Coffee<br>Meets <em>Soul</em></h2>
+                    <p class="experience-text">Step into a world where the aroma of freshly roasted beans fills the air and the gentle hum of artisan brewing creates a symphony for the senses.</p>
+                    <p class="experience-text">Our café is more than a destination — it's a sanctuary. Warm wood tones, ambient candlelight, and curated playlists set the stage for moments of connection and contemplation.</p>
+                    <div class="experience-features">
+                        <div class="experience-feature">
+                            <span class="feature-icon">🫘</span>
+                            <div>
+                                <h4>Artisan Roasting</h4>
+                                <p>Small-batch roasting on-site daily</p>
+                            </div>
+                        </div>
+                        <div class="experience-feature">
+                            <span class="feature-icon">🌿</span>
+                            <div>
+                                <h4>Organic Sourced</h4>
+                                <p>Direct trade from sustainable farms</p>
+                            </div>
+                        </div>
+                        <div class="experience-feature">
+                            <span class="feature-icon">✨</span>
+                            <div>
+                                <h4>Cozy Ambiance</h4>
+                                <p>Warm interiors designed for comfort</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signature Drinks Section -->
+    <section class="section section-signature" id="signature">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Signature Collection</p>
+                <h2 class="section-title">Beyond<br><em>Ordinary</em></h2>
+                <p class="section-desc">Our baristas craft exclusive drinks you won't find anywhere else — seasonal inspirations and timeless originals.</p>
+            </div>
+            <div class="signature-grid">
+                <div class="signature-card signature-card-large reveal" style="--delay: 0.1s">
+                    <img src="images/signature_drink.png" alt="The Golden Hour" loading="lazy">
+                    <div class="signature-card-overlay">
+                        <span class="signature-tag">Barista's Pick</span>
+                        <h3>The Golden Hour</h3>
+                        <p>Espresso, salted caramel, oat milk foam, gold dust finishing</p>
+                        <span class="signature-price">$7.50</span>
+                    </div>
+                </div>
+                <div class="signature-card reveal" style="--delay: 0.25s">
+                    <img src="images/seasonal_coffee.png" alt="Autumn Spice Latte" loading="lazy">
+                    <div class="signature-card-overlay">
+                        <span class="signature-tag">Seasonal</span>
+                        <h3>Autumn Spice</h3>
+                        <p>Pumpkin, cinnamon, nutmeg, whipped cream</p>
+                        <span class="signature-price">$6.50</span>
+                    </div>
+                </div>
+                <div class="signature-card reveal" style="--delay: 0.4s">
+                    <img src="images/espresso.png" alt="Midnight Mocha" loading="lazy">
+                    <div class="signature-card-overlay">
+                        <span class="signature-tag">Exclusive</span>
+                        <h3>Midnight Mocha</h3>
+                        <p>Dark espresso, Belgian chocolate, vanilla</p>
+                        <span class="signature-price">$6.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visit Our Café Section -->
+    <section class="section section-visit" id="visit">
+        <div class="container">
+            <div class="visit-layout">
+                <div class="visit-content reveal">
+                    <p class="section-eyebrow">Visit Us</p>
+                    <h2 class="section-title">Your Table<br><em>Awaits</em></h2>
+                    <div class="visit-details">
+                        <div class="visit-detail">
+                            <div class="visit-detail-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div>
+                                <h4>Location</h4>
+                                <p>6th Floor, Asopalav One West<br>Sevasi, Vadodara, Gujarat 391101</p>
+                            </div>
+                        </div>
+                        <div class="visit-detail">
+                            <div class="visit-detail-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div>
+                                <h4>Opening Hours</h4>
+                                <p>Mon – Fri: 7:00 AM – 9:00 PM<br>Sat – Sun: 8:00 AM – 10:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="visit-detail">
+                            <div class="visit-detail-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </div>
+                            <div>
+                                <h4>Contact</h4>
+                                <p>+1 (212) 555-BREW<br>hello@cafe.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-reserve" id="reserveBtn">
+                        <span>Reserve a Table</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="visit-map reveal" style="--delay: 0.2s">
+                    <div class="visit-map-wrapper">
+                        <div class="map-placeholder">
+                            <div class="map-pin">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--caramel)" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="var(--dark-roast)"/></svg>
+                            </div>
+                            <p>6th Floor, Asopalav One West, Sevasi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="logo-icon">☕</span>
+                    <h3>Cafe</h3>
+                    <p>Where every cup tells a story of passion, precision, and the pursuit of perfection.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Explore</h4>
+                        <ul>
+                            <li><a href="#coffee">Our Coffee</a></li>
+                            <li><a href="#bakery">Bakery</a></li>
+                            <li><a href="#experience">Experience</a></li>
+                            <li><a href="#signature">Signature</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Connect</h4>
+                        <ul>
+                            <li><a href="#">Instagram</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">TikTok</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Info</h4>
+                        <ul>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Cafe. Crafted with ♥ and caffeine.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Reservation Modal -->
+    <div class="modal-overlay" id="reservationModal">
+        <div class="modal-card">
+            <button class="modal-close" id="modalClose" aria-label="Close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <div class="modal-header">
+                <span class="modal-icon">☕</span>
+                <h2>Reserve a Table</h2>
+                <p>Experience Cafe — book your moment</p>
+            </div>
+            <form id="reservationForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resName">Full Name</label>
+                        <input type="text" id="resName" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="resEmail">Email</label>
+                        <input type="email" id="resEmail" name="email" required placeholder="you@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resPhone">Phone</label>
+                        <input type="tel" id="resPhone" name="phone" required placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="resGuests">Guests</label>
+                        <select id="resGuests" name="guests" required>
+                            <option value="">Select</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6 Guests</option>
+                            <option value="7+">7+ Guests</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resDate">Date</label>
+                        <input type="date" id="resDate" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="resTime">Time</label>
+                        <input type="time" id="resTime" name="time" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="resMessage">Special Requests <span class="optional">(optional)</span></label>
+                    <textarea id="resMessage" name="message" rows="3" placeholder="Any dietary needs, celebrations, seating preferences..."></textarea>
+                </div>
+                <button type="submit" class="form-submit" id="formSubmit">
+                    <span class="submit-text">Confirm Reservation</span>
+                    <span class="submit-loading"><span class="submit-spinner"></span> Sending...</span>
+                </button>
+            </form>
+            <div class="modal-result modal-success" id="modalSuccess">
+                <div class="result-icon success-icon">✓</div>
+                <h3>Reservation Confirmed!</h3>
+                <p>A confirmation has been sent to your email. We look forward to welcoming you at Cafe.</p>
+                <button class="form-submit" id="successCloseBtn">Close</button>
+            </div>
+            <div class="modal-result modal-error" id="modalError">
+                <div class="result-icon error-icon">✕</div>
+                <h3>Something went wrong</h3>
+                <p>Please try again or call us directly.</p>
+                <button class="form-submit" id="errorRetryBtn">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

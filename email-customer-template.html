@@ -1,0 +1,90 @@
+<!--
+  CIELO — Customer Confirmation Email Template
+  Copy this HTML into your EmailJS template named "customer_confirmation"
+  Template variables: {{name}}, {{email}}, {{guests}}, {{formatted_date}}, {{formatted_time}}, {{message}}
+-->
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 20px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="background:#161616;border-radius:16px;border:1px solid rgba(200,169,126,0.15);overflow:hidden;">
+
+  <!-- Luxe Header -->
+  <tr><td style="background:linear-gradient(135deg,#2C1810 0%,#3B2A24 50%,#1C1410 100%);padding:48px 32px;text-align:center;">
+    <div style="font-size:36px;margin-bottom:12px;">☕</div>
+    <h1 style="margin:0;font-size:32px;color:#C8A97E;font-family:Georgia,serif;letter-spacing:3px;">CIELO</h1>
+    <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,#C8A97E,transparent);margin:16px auto;"></div>
+    <p style="margin:0;font-size:12px;color:rgba(200,169,126,0.6);letter-spacing:3px;text-transform:uppercase;">Table Reservation Confirmed</p>
+  </td></tr>
+
+  <!-- Welcome -->
+  <tr><td style="padding:40px 32px 24px;text-align:center;">
+    <h2 style="margin:0 0 12px;font-size:22px;color:#F5EFE6;font-family:Georgia,serif;">Welcome, {{name}}</h2>
+    <p style="margin:0;font-size:14px;color:rgba(245,239,230,0.6);line-height:1.7;">Your table has been reserved. We're preparing something special for you.</p>
+  </td></tr>
+
+  <!-- Reservation Card -->
+  <tr><td style="padding:0 32px 32px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(200,169,126,0.04);border:1px solid rgba(200,169,126,0.12);border-radius:12px;overflow:hidden;">
+      <tr>
+        <td style="padding:24px 24px 0;" colspan="2">
+          <p style="margin:0 0 16px;font-size:11px;color:#C8A97E;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Reservation Details</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:12px 24px;width:50%;">
+          <p style="margin:0 0 4px;font-size:11px;color:rgba(245,239,230,0.4);text-transform:uppercase;letter-spacing:1px;">Date</p>
+          <p style="margin:0;font-size:15px;color:#F5EFE6;font-weight:600;">{{formatted_date}}</p>
+        </td>
+        <td style="padding:12px 24px;width:50%;">
+          <p style="margin:0 0 4px;font-size:11px;color:rgba(245,239,230,0.4);text-transform:uppercase;letter-spacing:1px;">Time</p>
+          <p style="margin:0;font-size:15px;color:#F5EFE6;font-weight:600;">{{formatted_time}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:12px 24px;border-top:1px solid rgba(200,169,126,0.08);">
+          <p style="margin:0 0 4px;font-size:11px;color:rgba(245,239,230,0.4);text-transform:uppercase;letter-spacing:1px;">Guests</p>
+          <p style="margin:0;font-size:15px;color:#F5EFE6;font-weight:600;">{{guests}}</p>
+        </td>
+        <td style="padding:12px 24px;border-top:1px solid rgba(200,169,126,0.08);">
+          <p style="margin:0 0 4px;font-size:11px;color:rgba(245,239,230,0.4);text-transform:uppercase;letter-spacing:1px;">Special Requests</p>
+          <p style="margin:0;font-size:13px;color:rgba(245,239,230,0.6);font-style:italic;">{{message}}</p>
+        </td>
+      </tr>
+      <tr><td colspan="2" style="padding:0 24px 24px;"></td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Divider -->
+  <tr><td style="padding:0 32px;">
+    <div style="width:100%;height:1px;background:rgba(200,169,126,0.1);"></div>
+  </td></tr>
+
+  <!-- Venue Info -->
+  <tr><td style="padding:32px;text-align:center;">
+    <p style="margin:0 0 4px;font-size:11px;color:#C8A97E;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Find Us</p>
+    <p style="margin:8px 0;font-size:14px;color:#F5EFE6;line-height:1.6;">6th Floor, Asopalav One West<br>Sevasi, Vadodara, Gujarat 391101</p>
+    <p style="margin:12px 0 0;font-size:13px;color:rgba(245,239,230,0.5);">
+      Mon – Fri: 7:00 AM – 9:00 PM &nbsp;|&nbsp; Sat – Sun: 8:00 AM – 10:00 PM
+    </p>
+  </td></tr>
+
+  <!-- CTA -->
+  <tr><td style="padding:0 32px 32px;text-align:center;">
+    <p style="margin:0 0 16px;font-size:13px;color:rgba(245,239,230,0.4);">Need to modify your reservation?</p>
+    <a href="mailto:hello@cielo.com" style="display:inline-block;padding:12px 32px;background:#C8A97E;color:#1C1C1C;text-decoration:none;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:0.5px;">Contact Us</a>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="padding:24px 32px;border-top:1px solid rgba(200,169,126,0.08);text-align:center;">
+    <p style="margin:0 0 4px;font-size:18px;color:#C8A97E;font-family:Georgia,serif;letter-spacing:2px;">CIELO</p>
+    <p style="margin:0;font-size:11px;color:rgba(245,239,230,0.25);">Where every cup tells a story of passion, precision, and perfection.</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
