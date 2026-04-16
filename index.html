@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- Premium Flatpickr Reservation Calendar Theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -76,7 +79,7 @@
                         <p>Bold, rich, and velvety. Our signature espresso is pulled to perfection with a thick golden crema.</p>
                         <div class="coffee-card-meta">
                             <span class="coffee-origin">Single Origin · Ethiopia</span>
-                            <span class="coffee-price">$4.50</span>
+                            <span class="coffee-price">₹350</span>
                         </div>
                     </div>
                 </div>
@@ -90,7 +93,7 @@
                         <p>Silky microfoam and bold espresso unite in a delicate balance. Finished with intricate latte art.</p>
                         <div class="coffee-card-meta">
                             <span class="coffee-origin">House Blend · Colombia</span>
-                            <span class="coffee-price">$5.50</span>
+                            <span class="coffee-price">₹450</span>
                         </div>
                     </div>
                 </div>
@@ -104,7 +107,7 @@
                         <p>Smooth, creamy, and comforting. Lush steamed milk cascading over our signature espresso blend.</p>
                         <div class="coffee-card-meta">
                             <span class="coffee-origin">Artisan Blend · Brazil</span>
-                            <span class="coffee-price">$5.00</span>
+                            <span class="coffee-price">₹400</span>
                         </div>
                     </div>
                 </div>
@@ -128,7 +131,7 @@
                     <div class="bakery-info">
                         <h3>Butter Croissant</h3>
                         <p>72-hour fermented dough, 84 flaky layers</p>
-                        <span class="bakery-price">$3.50</span>
+                        <span class="bakery-price">₹280</span>
                     </div>
                 </div>
                 <div class="bakery-item reveal" style="--delay: 0.25s">
@@ -138,7 +141,7 @@
                     <div class="bakery-info">
                         <h3>Chocolate Gâteau</h3>
                         <p>Belgian dark chocolate, caramel ganache drizzle</p>
-                        <span class="bakery-price">$6.50</span>
+                        <span class="bakery-price">₹550</span>
                     </div>
                 </div>
                 <div class="bakery-item reveal" style="--delay: 0.4s">
@@ -148,7 +151,7 @@
                     <div class="bakery-info">
                         <h3>Berry Danish</h3>
                         <p>Vanilla crème pâtissière, seasonal berries</p>
-                        <span class="bakery-price">$4.50</span>
+                        <span class="bakery-price">₹350</span>
                     </div>
                 </div>
             </div>
@@ -720,6 +723,32 @@
         </div>
     </section>
 
+    <!-- Ambiance Gallery Section (Auto Scroll Marquee) -->
+    <section class="section section-gallery" id="gallery">
+        <div class="section-header reveal">
+            <p class="section-eyebrow">Our Ambiance</p>
+            <h2 class="section-title">Designed for<br><em>Aesthetics</em></h2>
+            <p class="section-desc">Immerse yourself in our meticulously crafted spaces before you even step foot inside.</p>
+        </div>
+        <div class="gallery-wrapper reveal" style="--delay: 0.2s">
+            <div class="gallery-track">
+                <!-- Using existing images and placeholder divs for the luxury mosaic -->
+                <div class="gallery-item"><img src="images/cafe_atmosphere.png" alt="Cafe Ambiance" loading="lazy"></div>
+                <div class="gallery-item placeholder-dark"><span>Vibe</span></div>
+                <div class="gallery-item"><img src="images/espresso.png" alt="Brewing" loading="lazy"></div>
+                <div class="gallery-item placeholder-caramel"><span>Premium</span></div>
+                <div class="gallery-item"><img src="images/latte.png" alt="Artisan Coffee" loading="lazy"></div>
+                
+                <!-- Duplicate for seamless scroll -->
+                <div class="gallery-item"><img src="images/cafe_atmosphere.png" alt="Cafe Ambiance" loading="lazy"></div>
+                <div class="gallery-item placeholder-dark"><span>Vibe</span></div>
+                <div class="gallery-item"><img src="images/espresso.png" alt="Brewing" loading="lazy"></div>
+                <div class="gallery-item placeholder-caramel"><span>Premium</span></div>
+                <div class="gallery-item"><img src="images/latte.png" alt="Artisan Coffee" loading="lazy"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Signature Drinks Section -->
     <section class="section section-signature" id="signature">
         <div class="container">
@@ -735,7 +764,7 @@
                         <span class="signature-tag">Barista's Pick</span>
                         <h3>The Golden Hour</h3>
                         <p>Espresso, salted caramel, oat milk foam, gold dust finishing</p>
-                        <span class="signature-price">$7.50</span>
+                        <span class="signature-price">₹650</span>
                     </div>
                 </div>
                 <div class="signature-card reveal" style="--delay: 0.25s">
@@ -744,7 +773,7 @@
                         <span class="signature-tag">Seasonal</span>
                         <h3>Autumn Spice</h3>
                         <p>Pumpkin, cinnamon, nutmeg, whipped cream</p>
-                        <span class="signature-price">$6.50</span>
+                        <span class="signature-price">₹550</span>
                     </div>
                 </div>
                 <div class="signature-card reveal" style="--delay: 0.4s">
@@ -753,7 +782,51 @@
                         <span class="signature-tag">Exclusive</span>
                         <h3>Midnight Mocha</h3>
                         <p>Dark espresso, Belgian chocolate, vanilla</p>
-                        <span class="signature-price">$6.00</span>
+                        <span class="signature-price">₹500</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof / Reviews Section -->
+    <section class="section section-reviews" id="reviews">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Patron Experiences</p>
+                <h2 class="section-title">Words of<br><em>Appreciation</em></h2>
+                <div class="rating-stars">★★★★★</div>
+                <p class="section-desc">Rated 4.9/5 by over 2,000 coffee enthusiasts across India.</p>
+            </div>
+            <div class="reviews-grid">
+                <div class="review-card reveal" style="--delay: 0.1s">
+                    <div class="review-quote">"The absolute peak of coffee culture. Every sip feels like it was crafted by a true artisan. The ambiance is breathtaking."</div>
+                    <div class="review-author">
+                        <div class="author-avatar">R</div>
+                        <div class="author-info">
+                            <h4>Rohan M.</h4>
+                            <p>Local Guide</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card reveal" style="--delay: 0.25s">
+                    <div class="review-quote">"I host all my client meetings here. The service is impeccable, and the Midnight Mocha is a masterpiece."</div>
+                    <div class="review-author">
+                        <div class="author-avatar">P</div>
+                        <div class="author-info">
+                            <h4>Priya Desai</h4>
+                            <p>Entrepreneur</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-card reveal" style="--delay: 0.4s">
+                    <div class="review-quote">"Best butter croissants I've had outside of Paris. Paired with their single-origin espresso, it's pure heaven."</div>
+                    <div class="review-author">
+                        <div class="author-avatar">K</div>
+                        <div class="author-info">
+                            <h4>Karan S.</h4>
+                            <p>Food Blogger</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -937,6 +1010,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Lottie Player for Premium Loading Animation -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <!-- Lenis Smooth Scroll Library -->

@@ -1446,12 +1446,243 @@ a {
 }
 
 /* ===================================================================
+   AMBIANCE GALLERY
+   =================================================================== */
+.section-gallery {
+    background: var(--dark-roast);
+    overflow: hidden;
+}
+
+.gallery-wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+    position: relative;
+    /* Soft vignette fade on edges */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.gallery-track {
+    display: flex;
+    gap: 24px;
+    width: fit-content;
+    animation: marqueeScroll 40s linear infinite;
+    padding-left: 24px;
+}
+
+.gallery-track:hover {
+    animation-play-state: paused;
+}
+
+.gallery-item {
+    flex-shrink: 0;
+    width: 320px;
+    height: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--dark-border);
+    position: relative;
+    transition: transform 0.4s ease;
+    cursor: grab;
+}
+
+.gallery-item:active {
+    cursor: grabbing;
+}
+
+.gallery-item:hover {
+    transform: scale(1.02);
+    border-color: rgba(200, 169, 126, 0.3);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-dark, .placeholder-caramel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+}
+
+.placeholder-dark {
+    background: var(--dark-bg);
+    color: var(--caramel);
+}
+
+.placeholder-caramel {
+    background: var(--caramel);
+    color: var(--dark-roast);
+}
+
+@keyframes marqueeScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-50% - 12px)); }
+}
+
+/* ===================================================================
+   REVIEWS / SOCIAL PROOF
+   =================================================================== */
+.section-reviews {
+    background: linear-gradient(180deg, var(--dark-roast) 0%, var(--dark-bg) 100%);
+}
+
+.rating-stars {
+    color: var(--caramel);
+    font-size: 1.5rem;
+    letter-spacing: 0.2rem;
+    margin-bottom: 8px;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.review-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--dark-border);
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all var(--transition-base);
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(200, 169, 126, 0.25);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.review-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px;
+}
+
+.author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--caramel);
+    color: var(--dark-roast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.author-info h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 2px;
+}
+
+.author-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ===================================================================
+   FLATPICKR OVERRIDES
+   =================================================================== */
+.flatpickr-calendar {
+    background: var(--dark-card) !important;
+    border: 1px solid var(--dark-border) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-weekdays,
+span.flatpickr-weekday {
+    background: transparent !important;
+    color: var(--cream) !important;
+}
+
+.flatpickr-day {
+    color: var(--text-secondary) !important;
+}
+
+.flatpickr-day:hover {
+    background: rgba(200, 169, 126, 0.1) !important;
+    border-color: transparent !important;
+    color: var(--cream) !important;
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, 
+.flatpickr-day.startRange.inRange, 
+.flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.startRange:focus, 
+.flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange:hover, 
+.flatpickr-day.endRange:hover, 
+.flatpickr-day.selected.prevMonthDay, 
+.flatpickr-day.startRange.prevMonthDay, 
+.flatpickr-day.endRange.prevMonthDay, 
+.flatpickr-day.selected.nextMonthDay, 
+.flatpickr-day.startRange.nextMonthDay, 
+.flatpickr-day.endRange.nextMonthDay {
+    background: var(--caramel) !important;
+    border-color: var(--caramel) !important;
+    color: var(--dark-roast) !important;
+    font-weight: 600;
+}
+
+.flatpickr-time {
+    background: var(--dark-card) !important;
+    border-top: 1px solid var(--dark-border) !important;
+}
+
+.flatpickr-time input {
+    color: var(--cream) !important;
+}
+
+.flatpickr-time input:hover, .flatpickr-time input:focus,
+.flatpickr-time .flatpickr-time-separator, .flatpickr-time .flatpickr-am-pm {
+    color: var(--caramel) !important;
+}
+
+/* ===================================================================
    RESPONSIVE
    =================================================================== */
 @media (max-width: 1024px) {
 
     .coffee-grid,
-    .bakery-grid {
+    .bakery-grid,
+    .reviews-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -1526,7 +1757,8 @@ a {
     }
 
     .coffee-grid,
-    .bakery-grid {
+    .bakery-grid,
+    .reviews-grid {
         grid-template-columns: 1fr;
         max-width: 420px;
         margin: 0 auto;

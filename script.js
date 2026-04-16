@@ -668,12 +668,12 @@
         overlay.className = 'loading-overlay';
         
         // ----------------------------------------------------------------------
-        // NOTE: Replace the 'src' URL below with your preferred Lottie JSON link 
-        // from lottiefiles.com (e.g. coffee brewing, abstract loader, etc.)
+        // NOTE: Please place your downloaded .json file inside the main "Demo Cafe" 
+        // folder and rename it to exactly "loader.json".
         // ----------------------------------------------------------------------
         overlay.innerHTML = `
             <lottie-player 
-                src="https://lottie.host/80e7d7a1-5fb4-4a40-bcf5-6cd2e51922c0/oIKON9B15R.json" 
+                src="loader.json" 
                 background="transparent" 
                 speed="1" 
                 style="width: 250px; height: 250px;" 
@@ -726,30 +726,63 @@
     }
 
     /* ----------------------------------------------------------
-       7. Init — Progressive loading strategy
+       7. Init — Progressive loading strategy with Lottie sync
     ---------------------------------------------------------- */
     async function init() {
         const loader = createLoadingScreen();
+        const player = loader.querySelector('lottie-player');
 
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // onReady fires after first 30 frames — site starts immediately
+        let framesReady = false;
+        let animationReady = false;
+
+        function startSite() {
+            if (framesReady && animationReady) {
+                drawFrame(0);
+                requestAnimationFrame(renderLoop);
+
+                loader.classList.add('hidden');
+                setTimeout(() => loader.remove(), 600);
+
+                window.addEventListener('scroll', onScroll, { passive: true });
+                onScroll();
+
+                setupRevealAnimations();
+                setupNavbar();
+                setupSmoothScroll();
+                setupFlipbook();
+                setupReservation();
+            }
+        }
+
+        // Wait for at least one full animation loop to finish
+        if (player) {
+            player.addEventListener('loopComplete', () => {
+                animationReady = true;
+                startSite();
+            });
+            player.addEventListener('complete', () => {
+                animationReady = true;
+                startSite();
+            });
+            
+            // Failsafe (in case the Lottie fails to load or parse, wait maximum 5s)
+            setTimeout(() => {
+                if (!animationReady) {
+                    animationReady = true;
+                    startSite();
+                }
+            }, 5000); 
+        } else {
+            animationReady = true;
+        }
+
+        // onReady fires after first 30 frames
         preloadFrames(() => {
-            drawFrame(0);
-            requestAnimationFrame(renderLoop);
-
-            loader.classList.add('hidden');
-            setTimeout(() => loader.remove(), 600);
-
-            window.addEventListener('scroll', onScroll, { passive: true });
-            onScroll();
-
-            setupRevealAnimations();
-            setupNavbar();
-            setupSmoothScroll();
-            setupFlipbook();
-            setupReservation();
+            framesReady = true;
+            startSite();
         });
         // Remaining 270 frames load silently in background
     }
@@ -770,12 +803,20 @@
 
         if (!modal || !openBtn) return;
 
-        // Set min date to today
-        const dateInput = document.getElementById('resDate');
-        if (dateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.setAttribute('min', today);
-        }
+        // Initialize premium flatpickr dates
+        flatpickr("#resDate", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disableMobile: "true" // Keep premium dark picker even on mobile
+        });
+        
+        flatpickr("#resTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: false,
+            disableMobile: "true"
+        });
 
         // ═══════════ EmailJS Config ═══════════
         const EMAILJS_PUBLIC_KEY = 'V7a1G-fJ-i4uwK2Qr';
