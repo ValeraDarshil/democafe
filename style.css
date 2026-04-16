@@ -1788,24 +1788,25 @@ span.flatpickr-weekday {
 /* ===================================================================
    AMBIENT AUDIO TOGGLE
    =================================================================== */
+.nav-audio-item {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+}
+
 .audio-toggle {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: rgba(13, 13, 13, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(13, 13, 13, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(200, 169, 126, 0.3);
     color: var(--caramel);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
 }
 
@@ -1954,13 +1955,6 @@ span.flatpickr-weekday {
 
     .signature-grid {
         grid-template-rows: auto;
-    }
-
-    .audio-toggle {
-        bottom: 20px;
-        left: 20px;
-        width: 48px;
-        height: 48px;
     }
 
     .footer-top {
