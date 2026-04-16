@@ -445,7 +445,6 @@
     /* ----------------------------------------------------------
        1. Frame Animation Setup
     ---------------------------------------------------------- */
-    const TOTAL_FRAMES = 300;
     const canvas = document.getElementById('heroCanvas');
     const ctx = canvas.getContext('2d');
     const heroContainer = document.querySelector('.hero-scroll-container');
@@ -456,6 +455,9 @@
     // Detect mobile — width <= 768 OR touch device with width <= 1024
     const IS_MOBILE = (window.innerWidth <= 768) ||
                       ('ontouchstart' in window && window.innerWidth <= 1024);
+
+    // Mobile has 300 frames, Desktop has 240 frames
+    const TOTAL_FRAMES = IS_MOBILE ? 300 : 240;
 
     // Mobile gets frames-mobile/ (640x360, ~4x faster load)
     // Desktop gets frames/ (original full quality)
@@ -477,40 +479,63 @@
     /* ----------------------------------------------------------
        Progressive Loading
        Phase 1: Load first 30 frames → remove loader → start animation
-       Phase 2: Load remaining 270 frames silently in background
+       Phase 2: Load remaining safely in background limits concurrent requests
     ---------------------------------------------------------- */
     function preloadFrames(onReady) {
         const INITIAL_BATCH = 30;
         let initialDone = false;
 
         return new Promise((resolveAll) => {
-            for (let i = 0; i < TOTAL_FRAMES; i++) {
+            // Load in background batches to avoid overwhelming mobile browsers with concurrent requests 
+            // (Which causes dropped connections and 'only 1 frame' bug)
+            let currentIndex = 0;
+            const PARALLEL_DOWNLOADS = 8; // Keep it safe for mobile HTTP requests limits
+
+            function loadNext() {
+                if (currentIndex >= TOTAL_FRAMES) return;
+                const i = currentIndex++;
                 const img = new Image();
                 frames[i] = img;
-                img.src = framePath(i);
-
+                
                 img.onload = img.onerror = () => {
                     loadedCount++;
 
-                    // First 30 loaded — show site immediately
+                    // Phase 1 finished
                     if (!initialDone && loadedCount >= INITIAL_BATCH) {
                         initialDone = true;
                         onReady();
                     }
 
-                    // All 300 done
                     if (loadedCount === TOTAL_FRAMES) {
                         resolveAll();
+                    } else {
+                        loadNext(); // Dispatch next load right after one finishes
                     }
                 };
+                
+                img.src = framePath(i);
+            }
+
+            // Start worker pool
+            for (let w = 0; w < PARALLEL_DOWNLOADS; w++) {
+                loadNext();
             }
         });
     }
 
     // Resize canvas to window (with high DPR support)
+    let lastClientWidth = 0;
     function resizeCanvas() {
-        const dpr = window.devicePixelRatio || 1;
         const lw = window.innerWidth;
+        
+        // Only ignore if it is mobile and scroll triggered vertical resize (URL bar hiding)
+        // If width hasn't changed, we don't resize the canvas as it causes stuttering on mobile
+        if (IS_MOBILE && lastClientWidth === lw) {
+            return;
+        }
+        lastClientWidth = lw;
+
+        const dpr = window.devicePixelRatio || 1;
         const lh = window.innerHeight;
 
         canvas.width = lw * dpr;
@@ -736,9 +761,12 @@
 
         let framesReady = false;
         let animationReady = false;
+        let isStarted = false; // Fix: Prevent multiple startup triggers!
 
         function startSite() {
-            if (framesReady && animationReady) {
+            // Ensure we only start once, preventing exponential duplicates of renderLoop which causes severe lag
+            if (framesReady && animationReady && !isStarted) {
+                isStarted = true;
                 drawFrame(0);
                 requestAnimationFrame(renderLoop);
 
@@ -753,8 +781,8 @@
                 setupSmoothScroll();
                 setupFlipbook();
                 setupReservation();
-                setupMatchmaker();
-                setupAudio();
+                if (typeof setupMatchmaker === 'function') setupMatchmaker();
+                if (typeof setupAudio === 'function') setupAudio();
             }
         }
 
