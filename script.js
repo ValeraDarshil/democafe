@@ -425,6 +425,24 @@
     'use strict';
 
     /* ----------------------------------------------------------
+       0. Initialize Lenis Smooth Scroll
+    ---------------------------------------------------------- */
+    let lenis;
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+    }
+
+    /* ----------------------------------------------------------
        1. Frame Animation Setup
     ---------------------------------------------------------- */
     const TOTAL_FRAMES = 300;
@@ -489,10 +507,18 @@
         });
     }
 
-    // Resize canvas to window
+    // Resize canvas to window (with high DPR support)
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const dpr = window.devicePixelRatio || 1;
+        const lw = window.innerWidth;
+        const lh = window.innerHeight;
+
+        canvas.width = lw * dpr;
+        canvas.height = lh * dpr;
+        canvas.style.width = lw + 'px';
+        canvas.style.height = lh + 'px';
+
+        lastDrawnFrame = -1; // force redraw on resize
         drawFrame(Math.round(currentFrame));
     }
 
@@ -520,9 +546,13 @@
     }
 
     /* ----------------------------------------------------------
-       2. Smooth Render Loop (lerp-based)
+       2. Smooth Render Loop (lerp-based + Lenis integration)
     ---------------------------------------------------------- */
-    function renderLoop() {
+    function renderLoop(time) {
+        if (lenis) {
+            lenis.raf(time);
+        }
+
         // Smoothly interpolate toward target frame
         const diff = targetFrame - currentFrame;
         if (Math.abs(diff) > 0.1) {
@@ -631,14 +661,26 @@
     }
 
     /* ----------------------------------------------------------
-       6. Loading Screen
+       6. Loading Screen with Premium Lottie Support
     ---------------------------------------------------------- */
     function createLoadingScreen() {
         const overlay = document.createElement('div');
         overlay.className = 'loading-overlay';
+        
+        // ----------------------------------------------------------------------
+        // NOTE: Replace the 'src' URL below with your preferred Lottie JSON link 
+        // from lottiefiles.com (e.g. coffee brewing, abstract loader, etc.)
+        // ----------------------------------------------------------------------
         overlay.innerHTML = `
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Loading experience...</div>
+            <lottie-player 
+                src="https://lottie.host/80e7d7a1-5fb4-4a40-bcf5-6cd2e51922c0/oIKON9B15R.json" 
+                background="transparent" 
+                speed="1" 
+                style="width: 250px; height: 250px;" 
+                loop 
+                autoplay>
+            </lottie-player>
+            <div class="loading-text">Brewing Experience...</div>
         `;
         document.body.prepend(overlay);
         return overlay;
@@ -695,7 +737,7 @@
         // onReady fires after first 30 frames — site starts immediately
         preloadFrames(() => {
             drawFrame(0);
-            renderLoop();
+            requestAnimationFrame(renderLoop);
 
             loader.classList.add('hidden');
             setTimeout(() => loader.remove(), 600);
