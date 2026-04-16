@@ -749,6 +749,60 @@
         </div>
     </section>
 
+    <!-- Beverage Matchmaker Section -->
+    <section class="section section-matchmaker" id="matchmaker">
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-eyebrow">Discover</p>
+                <h2 class="section-title">Help Me<br><em>Choose</em></h2>
+                <p class="section-desc">Select what you are craving right now, and let our digital barista find your perfect cup.</p>
+            </div>
+            
+            <div class="matchmaker-filters reveal" style="--delay: 0.1s">
+                <button class="filter-btn" data-filter="iced">🧊 Iced</button>
+                <button class="filter-btn" data-filter="hot">🔥 Hot</button>
+                <button class="filter-btn" data-filter="strong">⚡ Strong</button>
+                <button class="filter-btn" data-filter="creamy">🥛 Creamy</button>
+                <button class="filter-btn" data-filter="sweet">🍫 Sweet</button>
+                <button class="filter-btn" data-filter="vegan">🌱 Vegan</button>
+            </div>
+
+            <div class="matchmaker-grid" id="matchGrid">
+                <div class="match-card hidden" data-tags="iced,sweet,creamy">
+                    <img src="images/signature_drink.png" alt="Iced Caramel Macchiato">
+                    <div class="match-info">
+                        <h4>Iced Caramel Frappe</h4>
+                        <p>Vanilla syrup, perfectly frothed milk, robust espresso, layered with rich caramel. Served ice cold.</p>
+                    </div>
+                </div>
+                <div class="match-card hidden" data-tags="hot,strong,vegan">
+                    <img src="images/espresso.png" alt="Oat Milk Cortado">
+                    <div class="match-info">
+                        <h4>Oat Milk Cortado</h4>
+                        <p>Equal parts rich espresso and silky steamed oat milk for a powerful but balanced kick.</p>
+                    </div>
+                </div>
+                <div class="match-card hidden" data-tags="hot,sweet,creamy">
+                    <img src="images/latte.png" alt="Belgian Mocha">
+                    <div class="match-info">
+                        <h4>Belgian Artisan Mocha</h4>
+                        <p>Espresso melted into real dark Belgian chocolate chunks with steamed heavy cream.</p>
+                    </div>
+                </div>
+                <div class="match-card hidden" data-tags="iced,strong">
+                    <img src="images/seasonal_coffee.png" alt="Nitro Cold Brew">
+                    <div class="match-info">
+                        <h4>Nitro Cold Brew</h4>
+                        <p>Slow-steeped for 24 hours, infused with nitrogen for a super-smooth, naturally sweet finish.</p>
+                    </div>
+                </div>
+                <div class="matchmaker-empty" id="matchEmpty">
+                    <p>Select your mood traits above to discover your perfect cup!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Signature Drinks Section -->
     <section class="section section-signature" id="signature">
         <div class="container">
@@ -1007,6 +1061,18 @@
             </div>
         </div>
     </div>
+
+    <!-- Ambient Audio Player -->
+    <!-- NOTE: Please place an 'ambient.mp3' file in the root folder for this to play -->
+    <audio id="ambientAudio" src="ambient.mp3" loop preload="none"></audio>
+    <button class="audio-toggle" id="audioToggleBtn" title="Play Ambient Music">
+        <span class="audio-icon">🎵</span>
+        <div class="audio-waves">
+            <span class="wave"></span>
+            <span class="wave"></span>
+            <span class="wave"></span>
+        </div>
+    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>

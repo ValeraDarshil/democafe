@@ -753,6 +753,8 @@
                 setupSmoothScroll();
                 setupFlipbook();
                 setupReservation();
+                setupMatchmaker();
+                setupAudio();
             }
         }
 
@@ -921,6 +923,99 @@
                 errorEl.style.display = 'block';
             } finally {
                 submitBtn.classList.remove('loading');
+            }
+        });
+    }
+
+    /* ----------------------------------------------------------
+       Beverage Matchmaker Logic
+    ---------------------------------------------------------- */
+    function setupMatchmaker() {
+        const filters = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.match-card');
+        const emptyState = document.getElementById('matchEmpty');
+
+        if (!filters.length || !cards.length) return;
+
+        let activeFilters = new Set();
+
+        filters.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                
+                // Toggle active state on button & set
+                if (activeFilters.has(filter)) {
+                    activeFilters.delete(filter);
+                    btn.classList.remove('active');
+                } else {
+                    activeFilters.add(filter);
+                    btn.classList.add('active');
+                }
+                
+                updateGrid();
+            });
+        });
+
+        function updateGrid() {
+            let matchesFound = 0;
+
+            if (activeFilters.size === 0) {
+                // If nothing selected, hide everything and show prompt
+                cards.forEach(card => card.classList.add('hidden'));
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            cards.forEach(card => {
+                const tags = card.dataset.tags.split(',');
+                // Check if card has ALL selected filters (AND logic) or ANY (OR logic).
+                // "Help Me Choose" usually works best if they select multiple, they want something that matches as many as possible, but let's use OR logic so it feels generous, OR strict AND logic.
+                // Strict AND logic is more "customized". Let's do AND logic: card must have every active filter.
+                let matchesAll = true;
+                activeFilters.forEach(f => {
+                    if (!tags.includes(f)) matchesAll = false;
+                });
+
+                if (matchesAll) {
+                    card.classList.remove('hidden');
+                    matchesFound++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (matchesFound === 0) {
+                emptyState.innerHTML = '<p>Ah, a unique craving! Try removing a filter to see more options.</p>';
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.innerHTML = '<p>Select your mood traits above to discover your perfect cup!</p>';
+            }
+        }
+    }
+
+    /* ----------------------------------------------------------
+       Ambient Audio Toggle Logic
+    ---------------------------------------------------------- */
+    function setupAudio() {
+        const audio = document.getElementById('ambientAudio');
+        const toggleBtn = document.getElementById('audioToggleBtn');
+
+        if (!audio || !toggleBtn) return;
+
+        toggleBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                // Play audio
+                audio.play().then(() => {
+                    toggleBtn.classList.add('playing');
+                }).catch(err => {
+                    console.log('Audio playback prevented:', err);
+                });
+            } else {
+                // Pause audio
+                audio.pause();
+                toggleBtn.classList.remove('playing');
             }
         });
     }

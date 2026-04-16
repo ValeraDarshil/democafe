@@ -1676,13 +1676,192 @@ span.flatpickr-weekday {
 }
 
 /* ===================================================================
+   MATCHMAKER / DRINK DISCOVERY
+   =================================================================== */
+.section-matchmaker {
+    background: var(--dark-roast);
+    border-top: 1px solid var(--dark-border);
+}
+
+.matchmaker-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 48px;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--dark-border);
+    color: var(--text-secondary);
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.filter-btn:hover {
+    background: rgba(200, 169, 126, 0.1);
+    color: var(--cream);
+    border-color: rgba(200, 169, 126, 0.4);
+}
+
+.filter-btn.active {
+    background: var(--caramel);
+    color: var(--dark-roast);
+    border-color: var(--caramel);
+    box-shadow: 0 4px 16px rgba(200, 169, 126, 0.3);
+}
+
+.matchmaker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    min-height: 200px;
+    position: relative;
+}
+
+.matchmaker-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    border: 1px dashed var(--dark-border);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.matchmaker-empty.hidden {
+    display: none;
+}
+
+.match-card {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--dark-border);
+    border-radius: 20px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    transform: scale(1);
+}
+
+.match-card.hidden {
+    display: none;
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.match-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(200, 169, 126, 0.2);
+}
+
+.match-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-bottom: 8px;
+}
+
+.match-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ===================================================================
+   AMBIENT AUDIO TOGGLE
+   =================================================================== */
+.audio-toggle {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(13, 13, 13, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(200, 169, 126, 0.3);
+    color: var(--caramel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.audio-toggle:hover {
+    transform: scale(1.05);
+    border-color: var(--caramel);
+    background: rgba(200, 169, 126, 0.1);
+}
+
+.audio-icon {
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.audio-waves {
+    position: absolute;
+    display: flex;
+    gap: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.audio-waves .wave {
+    width: 3px;
+    height: 10px;
+    background: var(--caramel);
+    border-radius: 2px;
+    animation: waveAnim 1s ease-in-out infinite alternate;
+}
+
+.audio-waves .wave:nth-child(2) { animation-delay: 0.2s; }
+.audio-waves .wave:nth-child(3) { animation-delay: 0.4s; }
+
+.audio-toggle.playing .audio-icon {
+    display: none;
+}
+
+.audio-toggle.playing .audio-waves {
+    opacity: 1;
+}
+
+@keyframes waveAnim {
+    0% { height: 4px; }
+    100% { height: 16px; }
+}
+
+/* ===================================================================
    RESPONSIVE
    =================================================================== */
 @media (max-width: 1024px) {
 
     .coffee-grid,
     .bakery-grid,
-    .reviews-grid {
+    .reviews-grid,
+    .matchmaker-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -1758,7 +1937,8 @@ span.flatpickr-weekday {
 
     .coffee-grid,
     .bakery-grid,
-    .reviews-grid {
+    .reviews-grid,
+    .matchmaker-grid {
         grid-template-columns: 1fr;
         max-width: 420px;
         margin: 0 auto;
@@ -1774,6 +1954,13 @@ span.flatpickr-weekday {
 
     .signature-grid {
         grid-template-rows: auto;
+    }
+
+    .audio-toggle {
+        bottom: 20px;
+        left: 20px;
+        width: 48px;
+        height: 48px;
     }
 
     .footer-top {
