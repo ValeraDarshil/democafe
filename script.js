@@ -673,14 +673,13 @@
         // ----------------------------------------------------------------------
         overlay.innerHTML = `
             <lottie-player 
+                class="lottie-loader"
                 src="loader.json" 
                 background="transparent" 
                 speed="1" 
-                style="width: 250px; height: 250px;" 
                 loop 
                 autoplay>
             </lottie-player>
-            <div class="loading-text">Brewing Experience...</div>
         `;
         document.body.prepend(overlay);
         return overlay;
