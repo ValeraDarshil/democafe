@@ -477,49 +477,134 @@
     }
 
     /* ----------------------------------------------------------
-       Progressive Loading
-       Phase 1: Load first 30 frames → remove loader → start animation
-       Phase 2: Load remaining safely in background limits concurrent requests
+       IndexedDB Database (Cache Logic for Instant 2nd Loads)
     ---------------------------------------------------------- */
+    const DB_NAME = 'cieloFramesDB';
+    const STORE_NAME = 'frames';
+    const CACHE_VERSION = 1; // Increment if server frames change
+
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, CACHE_VERSION);
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (db.objectStoreNames.contains(STORE_NAME)) {
+                    db.deleteObjectStore(STORE_NAME);
+                }
+                db.createObjectStore(STORE_NAME);
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function getCachedFrame(db, key) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.get(key);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function cacheFrame(db, key, blob) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.put(blob, key);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function acquireFrameBlob(db, index) {
+        const path = framePath(index);
+        try {
+            const cachedBlob = await getCachedFrame(db, path);
+            if (cachedBlob) return cachedBlob;
+            
+            // Network fallback with fetch
+            const res = await fetch(path);
+            if (!res.ok) throw new Error('Fetch failed');
+            const blob = await res.blob();
+            await cacheFrame(db, path, blob);
+            return blob;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /* ----------------------------------------------------------
+       Progressive Loading (Crazy Idea Algorithm)
+       Phase 1: Skeleton Keyframes (Ensures no blank gaps)
+       Phase 2: In-between Keyframes
+       Phase 3: Sequential Fill
+    ---------------------------------------------------------- */
+    function buildSkeletonFetchOrder() {
+        const order = [];
+        const seen = new Set();
+        function add(idx) {
+            if (idx >= 0 && idx < TOTAL_FRAMES && !seen.has(idx)) {
+                order.push(idx);
+                seen.add(idx);
+            }
+        }
+        
+        // Initial Keyframes for full sequence coverage right away
+        for(let i=0; i<TOTAL_FRAMES; i+=30) add(i);
+        for(let i=15; i<TOTAL_FRAMES; i+=30) add(i);
+        // Fill remaining
+        for(let i=0; i<TOTAL_FRAMES; i++) add(i);
+        
+        return order;
+    }
+
     function preloadFrames(onReady) {
-        const INITIAL_BATCH = 30;
+        const order = buildSkeletonFetchOrder();
+        let currentIndex = 0;
         let initialDone = false;
+        const INITIAL_BATCH = 15; // 15 keyframes = fully usable skeleton
 
-        return new Promise((resolveAll) => {
-            // Load in background batches to avoid overwhelming mobile browsers with concurrent requests 
-            // (Which causes dropped connections and 'only 1 frame' bug)
-            let currentIndex = 0;
-            const PARALLEL_DOWNLOADS = 8; // Keep it safe for mobile HTTP requests limits
-
-            function loadNext() {
-                if (currentIndex >= TOTAL_FRAMES) return;
-                const i = currentIndex++;
-                const img = new Image();
-                frames[i] = img;
+        openDB().then(db => {
+            const PARALLEL_DOWNLOADS = 8;
+            
+            async function loadNext() {
+                if (currentIndex >= order.length) return;
+                const i = order[currentIndex++];
                 
-                img.onload = img.onerror = () => {
-                    loadedCount++;
-
-                    // Phase 1 finished
+                const blob = await acquireFrameBlob(db, i);
+                if (blob) {
+                    const img = new Image();
+                    const objectUrl = URL.createObjectURL(blob);
+                    
+                    await new Promise((resolve) => {
+                        img.onload = img.onerror = () => {
+                            frames[i] = img;
+                            loadedCount++;
+                            resolve();
+                        };
+                        img.src = objectUrl;
+                    });
+                    
                     if (!initialDone && loadedCount >= INITIAL_BATCH) {
                         initialDone = true;
                         onReady();
                     }
-
-                    if (loadedCount === TOTAL_FRAMES) {
-                        resolveAll();
-                    } else {
-                        loadNext(); // Dispatch next load right after one finishes
-                    }
-                };
+                }
                 
-                img.src = framePath(i);
+                // Keep pulling tasks
+                loadNext();
             }
 
-            // Start worker pool
             for (let w = 0; w < PARALLEL_DOWNLOADS; w++) {
                 loadNext();
             }
+        }).catch(err => {
+            console.error("DB Error:", err);
+            // Fallback trigger if indexedDB disabled
+            initialDone = true;
+            onReady();
         });
     }
 
@@ -529,10 +614,7 @@
         const lw = window.innerWidth;
         
         // Only ignore if it is mobile and scroll triggered vertical resize (URL bar hiding)
-        // If width hasn't changed, we don't resize the canvas as it causes stuttering on mobile
-        if (IS_MOBILE && lastClientWidth === lw) {
-            return;
-        }
+        if (IS_MOBILE && lastClientWidth === lw) return;
         lastClientWidth = lw;
 
         const dpr = window.devicePixelRatio || 1;
@@ -547,12 +629,25 @@
         drawFrame(Math.round(currentFrame));
     }
 
+    // Zero-Freeze: Find closest loaded frame if precise one is missing
+    function getClosestLoadedFrame(index) {
+        if (frames[index] && frames[index].complete && frames[index].naturalWidth > 0) return index;
+        
+        for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+            const up = index + offset;
+            if (up < TOTAL_FRAMES && frames[up] && frames[up].complete && frames[up].naturalWidth > 0) return up;
+            const down = index - offset;
+            if (down >= 0 && frames[down] && frames[down].complete && frames[down].naturalWidth > 0) return down;
+        }
+        return -1;
+    }
+
     // Draw a specific frame - cover the canvas while preserving aspect ratio
     function drawFrame(index) {
-        if (index === lastDrawnFrame) return;
-        if (!frames[index] || !frames[index].complete || frames[index].naturalWidth === 0) return;
+        const closestIndex = getClosestLoadedFrame(index);
+        if (closestIndex === -1 || closestIndex === lastDrawnFrame) return;
 
-        const img = frames[index];
+        const img = frames[closestIndex];
         const cw = canvas.width;
         const ch = canvas.height;
         const iw = img.naturalWidth;
@@ -567,7 +662,7 @@
 
         ctx.clearRect(0, 0, cw, ch);
         ctx.drawImage(img, dx, dy, dw, dh);
-        lastDrawnFrame = index;
+        lastDrawnFrame = closestIndex;
     }
 
     /* ----------------------------------------------------------
