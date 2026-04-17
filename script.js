@@ -477,61 +477,44 @@
     }
 
     /* ----------------------------------------------------------
-       Progressive Loading (No-Lag Skeleton Algorithm)
-       Uses native HTTP caching to prevent massive RAM/GC spikes.
+       Progressive Loading (Original Proven Logic — Ultra Smooth)
+       Phase 1: Load first 30 frames → remove loader → start animation
+       Phase 2: Load remaining safely in background
     ---------------------------------------------------------- */
-    function buildSkeletonFetchOrder() {
-        const order = [];
-        const seen = new Set();
-        function add(idx) {
-            if (idx >= 0 && idx < TOTAL_FRAMES && !seen.has(idx)) {
-                order.push(idx);
-                seen.add(idx);
-            }
-        }
-        
-        // Initial Keyframes for full sequence coverage right away
-        for(let i=0; i<TOTAL_FRAMES; i+=10) add(i);
-        // Fill remaining sequentially
-        for(let i=0; i<TOTAL_FRAMES; i++) add(i);
-        
-        return order;
-    }
-
     function preloadFrames(onReady) {
-        const order = buildSkeletonFetchOrder();
-        let currentIndex = 0;
+        const INITIAL_BATCH = 30;
         let initialDone = false;
-        const INITIAL_BATCH = 20; // Enough keyframes to unlock the scroll natively
 
         return new Promise((resolveAll) => {
-            const PARALLEL_DOWNLOADS = 8;
-            
+            let currentIndex = 0;
+            const PARALLEL_DOWNLOADS = 6;
+
             function loadNext() {
-                if (currentIndex >= order.length) {
-                    if (loadedCount >= TOTAL_FRAMES) resolveAll();
-                    return;
-                }
-                const arrayIndex = currentIndex++;
-                const frameNum = order[arrayIndex];
-                
+                if (currentIndex >= TOTAL_FRAMES) return;
+                const i = currentIndex++;
                 const img = new Image();
-                frames[frameNum] = img;
-                
+                frames[i] = img;
+
                 img.onload = img.onerror = () => {
                     loadedCount++;
-                    
+
+                    // Phase 1 finished
                     if (!initialDone && loadedCount >= INITIAL_BATCH) {
                         initialDone = true;
                         onReady();
                     }
-                    loadNext();
+
+                    if (loadedCount === TOTAL_FRAMES) {
+                        resolveAll();
+                    } else {
+                        loadNext();
+                    }
                 };
-                
-                // Native browser caching avoids blob memory bloat
-                img.src = framePath(frameNum);
+
+                img.src = framePath(i);
             }
 
+            // Start worker pool
             for (let w = 0; w < PARALLEL_DOWNLOADS; w++) {
                 loadNext();
             }
@@ -559,20 +542,12 @@
         drawFrame(Math.round(currentFrame));
     }
 
-    // Stable Zero-Freeze: Finds nearest PREVIOUS loaded frame to avoid jitter
-    function getNearestStableFrame(index) {
-        for (let i = index; i >= 0; i--) {
-            if (frames[i] && frames[i].complete && frames[i].naturalWidth > 0) return i;
-        }
-        return -1;
-    }
-
     // Draw a specific frame - cover the canvas while preserving aspect ratio
     function drawFrame(index) {
-        const stableIndex = getNearestStableFrame(index);
-        if (stableIndex === -1 || stableIndex === lastDrawnFrame) return;
+        if (index === lastDrawnFrame) return;
+        if (!frames[index] || !frames[index].complete || frames[index].naturalWidth === 0) return;
 
-        const img = frames[stableIndex];
+        const img = frames[index];
         const cw = canvas.width;
         const ch = canvas.height;
         const iw = img.naturalWidth;
@@ -587,7 +562,7 @@
 
         ctx.clearRect(0, 0, cw, ch);
         ctx.drawImage(img, dx, dy, dw, dh);
-        lastDrawnFrame = stableIndex;
+        lastDrawnFrame = index;
     }
 
     /* ----------------------------------------------------------
