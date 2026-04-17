@@ -477,69 +477,8 @@
     }
 
     /* ----------------------------------------------------------
-       IndexedDB Database (Cache Logic for Instant 2nd Loads)
-    ---------------------------------------------------------- */
-    const DB_NAME = 'cieloFramesDB';
-    const STORE_NAME = 'frames';
-    const CACHE_VERSION = 1; // Increment if server frames change
-
-    function openDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, CACHE_VERSION);
-            request.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (db.objectStoreNames.contains(STORE_NAME)) {
-                    db.deleteObjectStore(STORE_NAME);
-                }
-                db.createObjectStore(STORE_NAME);
-            };
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function getCachedFrame(db, key) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const request = store.get(key);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function cacheFrame(db, key, blob) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            const request = store.put(blob, key);
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function acquireFrameBlob(db, index) {
-        const path = framePath(index);
-        try {
-            const cachedBlob = await getCachedFrame(db, path);
-            if (cachedBlob) return cachedBlob;
-            
-            // Network fallback with fetch
-            const res = await fetch(path);
-            if (!res.ok) throw new Error('Fetch failed');
-            const blob = await res.blob();
-            await cacheFrame(db, path, blob);
-            return blob;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    /* ----------------------------------------------------------
-       Progressive Loading (Crazy Idea Algorithm)
-       Phase 1: Skeleton Keyframes (Ensures no blank gaps)
-       Phase 2: In-between Keyframes
-       Phase 3: Sequential Fill
+       Progressive Loading (No-Lag Skeleton Algorithm)
+       Uses native HTTP caching to prevent massive RAM/GC spikes.
     ---------------------------------------------------------- */
     function buildSkeletonFetchOrder() {
         const order = [];
@@ -552,9 +491,8 @@
         }
         
         // Initial Keyframes for full sequence coverage right away
-        for(let i=0; i<TOTAL_FRAMES; i+=30) add(i);
-        for(let i=15; i<TOTAL_FRAMES; i+=30) add(i);
-        // Fill remaining
+        for(let i=0; i<TOTAL_FRAMES; i+=10) add(i);
+        // Fill remaining sequentially
         for(let i=0; i<TOTAL_FRAMES; i++) add(i);
         
         return order;
@@ -564,47 +502,39 @@
         const order = buildSkeletonFetchOrder();
         let currentIndex = 0;
         let initialDone = false;
-        const INITIAL_BATCH = 15; // 15 keyframes = fully usable skeleton
+        const INITIAL_BATCH = 20; // Enough keyframes to unlock the scroll natively
 
-        openDB().then(db => {
+        return new Promise((resolveAll) => {
             const PARALLEL_DOWNLOADS = 8;
             
-            async function loadNext() {
-                if (currentIndex >= order.length) return;
-                const i = order[currentIndex++];
+            function loadNext() {
+                if (currentIndex >= order.length) {
+                    if (loadedCount >= TOTAL_FRAMES) resolveAll();
+                    return;
+                }
+                const arrayIndex = currentIndex++;
+                const frameNum = order[arrayIndex];
                 
-                const blob = await acquireFrameBlob(db, i);
-                if (blob) {
-                    const img = new Image();
-                    const objectUrl = URL.createObjectURL(blob);
-                    
-                    await new Promise((resolve) => {
-                        img.onload = img.onerror = () => {
-                            frames[i] = img;
-                            loadedCount++;
-                            resolve();
-                        };
-                        img.src = objectUrl;
-                    });
+                const img = new Image();
+                frames[frameNum] = img;
+                
+                img.onload = img.onerror = () => {
+                    loadedCount++;
                     
                     if (!initialDone && loadedCount >= INITIAL_BATCH) {
                         initialDone = true;
                         onReady();
                     }
-                }
+                    loadNext();
+                };
                 
-                // Keep pulling tasks
-                loadNext();
+                // Native browser caching avoids blob memory bloat
+                img.src = framePath(frameNum);
             }
 
             for (let w = 0; w < PARALLEL_DOWNLOADS; w++) {
                 loadNext();
             }
-        }).catch(err => {
-            console.error("DB Error:", err);
-            // Fallback trigger if indexedDB disabled
-            initialDone = true;
-            onReady();
         });
     }
 
@@ -629,25 +559,20 @@
         drawFrame(Math.round(currentFrame));
     }
 
-    // Zero-Freeze: Find closest loaded frame if precise one is missing
-    function getClosestLoadedFrame(index) {
-        if (frames[index] && frames[index].complete && frames[index].naturalWidth > 0) return index;
-        
-        for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
-            const up = index + offset;
-            if (up < TOTAL_FRAMES && frames[up] && frames[up].complete && frames[up].naturalWidth > 0) return up;
-            const down = index - offset;
-            if (down >= 0 && frames[down] && frames[down].complete && frames[down].naturalWidth > 0) return down;
+    // Stable Zero-Freeze: Finds nearest PREVIOUS loaded frame to avoid jitter
+    function getNearestStableFrame(index) {
+        for (let i = index; i >= 0; i--) {
+            if (frames[i] && frames[i].complete && frames[i].naturalWidth > 0) return i;
         }
         return -1;
     }
 
     // Draw a specific frame - cover the canvas while preserving aspect ratio
     function drawFrame(index) {
-        const closestIndex = getClosestLoadedFrame(index);
-        if (closestIndex === -1 || closestIndex === lastDrawnFrame) return;
+        const stableIndex = getNearestStableFrame(index);
+        if (stableIndex === -1 || stableIndex === lastDrawnFrame) return;
 
-        const img = frames[closestIndex];
+        const img = frames[stableIndex];
         const cw = canvas.width;
         const ch = canvas.height;
         const iw = img.naturalWidth;
@@ -662,7 +587,7 @@
 
         ctx.clearRect(0, 0, cw, ch);
         ctx.drawImage(img, dx, dy, dw, dh);
-        lastDrawnFrame = closestIndex;
+        lastDrawnFrame = stableIndex;
     }
 
     /* ----------------------------------------------------------
