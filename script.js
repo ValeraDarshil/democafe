@@ -456,11 +456,11 @@
     const IS_MOBILE = (window.innerWidth <= 768) ||
                       ('ontouchstart' in window && window.innerWidth <= 1024);
 
-    // Mobile has 300 frames, Desktop has 240 frames
-    const TOTAL_FRAMES = IS_MOBILE ? 300 : 240;
+    // Desktop has 300 frames in frames/, Mobile has 240 frames in frames-mobile/
+    const TOTAL_FRAMES = IS_MOBILE ? 240 : 300;
 
-    // Mobile gets frames-mobile/ (640x360, ~4x faster load)
-    // Desktop gets frames/ (original full quality)
+    // Mobile gets frames-mobile/ (portrait 1080x1920)
+    // Desktop gets frames/ (landscape 1280x720, lighter per frame)
     const FRAME_FOLDER = IS_MOBILE ? 'frames-mobile' : 'frames';
 
     const frames = [];
