@@ -473,7 +473,7 @@
     // Build frame path — picks correct folder based on device
     function framePath(index) {
         const num = String(index + 1).padStart(3, '0');
-        return `${FRAME_FOLDER}/ezgif-frame-${num}.png`;
+        return `${FRAME_FOLDER}/ezgif-frame-${num}.webp`;
     }
 
     /* ----------------------------------------------------------
