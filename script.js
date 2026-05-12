@@ -417,6 +417,20 @@
 
 
 // Mobiel ke liyeh yeh sirf testing hai baki upar wala perfectly working hai desktop ke liyeh
+// ✅ FIX 1: Page load hote hi TURANT frames download shuru — loader ka wait nahi
+(function preStartFrameDownload() {
+    const IS_MOB = (window.innerWidth <= 768) ||
+                   ('ontouchstart' in window && window.innerWidth <= 1024);
+    const FOLDER = IS_MOB ? 'frames-mobile' : 'frames';
+    const BATCH  = 15;
+
+    for (let i = 0; i < BATCH; i++) {
+        const num = String(i + 1).padStart(3, '0');
+        const img = new Image();
+        img.src = `${FOLDER}/ezgif-frame-${num}.webp`;
+    }
+})();
+
 /* ===================================================================
    Cielo — Scroll-Based Frame Animation & Interactions
    =================================================================== */
@@ -425,10 +439,11 @@
     'use strict';
 
     /* ----------------------------------------------------------
-       0. Initialize Lenis Smooth Scroll
+       0. Initialize Lenis Smooth Scroll (ONLY on Desktop)
+       ✅ FIX 2: Mobile pe Lenis disable — native scroll smooth hota hai
     ---------------------------------------------------------- */
     let lenis;
-    if (typeof Lenis !== 'undefined') {
+    if (typeof Lenis !== 'undefined' && !((window.innerWidth <= 768) || ('ontouchstart' in window && window.innerWidth <= 1024))) {
         lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -452,42 +467,38 @@
     const heroContent = document.querySelector('.hero-content');
     const scrollHint = document.querySelector('.hero-scroll-hint');
 
-    // Detect mobile — width <= 768 OR touch device with width <= 1024
     const IS_MOBILE = (window.innerWidth <= 768) ||
                       ('ontouchstart' in window && window.innerWidth <= 1024);
 
-    // Desktop has 300 frames in frames/, Mobile has 240 frames in frames-mobile/
     const TOTAL_FRAMES = IS_MOBILE ? 240 : 300;
-
-    // Mobile gets frames-mobile/ (portrait 1080x1920)
-    // Desktop gets frames/ (landscape 1280x720, lighter per frame)
     const FRAME_FOLDER = IS_MOBILE ? 'frames-mobile' : 'frames';
 
     const frames = [];
     let loadedCount = 0;
-    let currentFrame = 0;       // smoothly interpolated (float)
-    let targetFrame = 0;        // exact frame from scroll position
-    let lastDrawnFrame = -1;    // last integer frame drawn to canvas
-    const LERP_SPEED = 0.08;    // smoothing factor (lower = smoother/slower)
+    let currentFrame = 0;
+    let targetFrame = 0;
+    let lastDrawnFrame = -1;
 
-    // Build frame path — picks correct folder based on device
+    // ✅ FIX 3: Mobile pe LERP thoda fast — weak CPU pe kam frames draw honge
+    const LERP_SPEED = IS_MOBILE ? 0.12 : 0.08;
+
     function framePath(index) {
         const num = String(index + 1).padStart(3, '0');
         return `${FRAME_FOLDER}/ezgif-frame-${num}.webp`;
     }
 
     /* ----------------------------------------------------------
-       Progressive Loading (Original Proven Logic — Ultra Smooth)
-       Phase 1: Load first 30 frames → remove loader → start animation
-       Phase 2: Load remaining safely in background
+       Progressive Loading
+       ✅ FIX 4: PARALLEL_DOWNLOADS 6 → 12 (doubles download speed)
+       ✅ FIX 5: INITIAL_BATCH 30 → 20 (animation jaldi shuru ho)
     ---------------------------------------------------------- */
     function preloadFrames(onReady) {
-        const INITIAL_BATCH = 30;
+        const INITIAL_BATCH = 20;
         let initialDone = false;
 
         return new Promise((resolveAll) => {
             let currentIndex = 0;
-            const PARALLEL_DOWNLOADS = 6;
+            const PARALLEL_DOWNLOADS = 12; // ✅ FIX 4: 6 → 12
 
             function loadNext() {
                 if (currentIndex >= TOTAL_FRAMES) return;
@@ -498,7 +509,6 @@
                 img.onload = img.onerror = () => {
                     loadedCount++;
 
-                    // Phase 1 finished
                     if (!initialDone && loadedCount >= INITIAL_BATCH) {
                         initialDone = true;
                         onReady();
@@ -514,19 +524,15 @@
                 img.src = framePath(i);
             }
 
-            // Start worker pool
             for (let w = 0; w < PARALLEL_DOWNLOADS; w++) {
                 loadNext();
             }
         });
     }
 
-    // Resize canvas to window (with high DPR support)
     let lastClientWidth = 0;
     function resizeCanvas() {
         const lw = window.innerWidth;
-        
-        // Only ignore if it is mobile and scroll triggered vertical resize (URL bar hiding)
         if (IS_MOBILE && lastClientWidth === lw) return;
         lastClientWidth = lw;
 
@@ -538,11 +544,10 @@
         canvas.style.width = lw + 'px';
         canvas.style.height = lh + 'px';
 
-        lastDrawnFrame = -1; // force redraw on resize
+        lastDrawnFrame = -1;
         drawFrame(Math.round(currentFrame));
     }
 
-    // Draw a specific frame - cover the canvas while preserving aspect ratio
     function drawFrame(index) {
         if (index === lastDrawnFrame) return;
         if (!frames[index] || !frames[index].complete || frames[index].naturalWidth === 0) return;
@@ -553,7 +558,6 @@
         const iw = img.naturalWidth;
         const ih = img.naturalHeight;
 
-        // "Cover" behavior
         const scale = Math.max(cw / iw, ch / ih);
         const dw = iw * scale;
         const dh = ih * scale;
@@ -566,14 +570,11 @@
     }
 
     /* ----------------------------------------------------------
-       2. Smooth Render Loop (lerp-based + Lenis integration)
+       2. Smooth Render Loop
     ---------------------------------------------------------- */
     function renderLoop(time) {
-        if (lenis) {
-            lenis.raf(time);
-        }
+        if (lenis) lenis.raf(time);
 
-        // Smoothly interpolate toward target frame
         const diff = targetFrame - currentFrame;
         if (Math.abs(diff) > 0.1) {
             currentFrame += diff * LERP_SPEED;
@@ -588,7 +589,7 @@
     }
 
     /* ----------------------------------------------------------
-       2b. Scroll Handler (sets target, doesn't draw directly)
+       2b. Scroll Handler
     ---------------------------------------------------------- */
     function onScroll() {
         const rect = heroContainer.getBoundingClientRect();
@@ -596,25 +597,20 @@
         const scrolled = -rect.top;
         const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
 
-        // Set target frame — the render loop will smoothly animate to it
         targetFrame = Math.min(TOTAL_FRAMES - 1, progress * (TOTAL_FRAMES - 1));
-
-        // Update progress bar
         progressBar.style.width = (progress * 100) + '%';
 
-        // Fade hero content as user scrolls
         const contentFade = Math.max(0, 1 - progress * 3);
         heroContent.style.opacity = contentFade;
         heroContent.style.transform = `translateY(${progress * 60}px)`;
 
-        // Hide scroll hint
         if (scrollHint) {
             scrollHint.style.opacity = Math.max(0, 1 - progress * 8);
         }
     }
 
     /* ----------------------------------------------------------
-       3. Reveal Animations (Intersection Observer)
+       3. Reveal Animations
     ---------------------------------------------------------- */
     function setupRevealAnimations() {
         const reveals = document.querySelectorAll('.reveal');
@@ -625,10 +621,7 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, {
-            threshold: 0.15,
-            rootMargin: '0px 0px -40px 0px'
-        });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
         reveals.forEach((el) => observer.observe(el));
     }
@@ -641,18 +634,15 @@
         const toggle = document.getElementById('navToggle');
         const links = document.getElementById('navLinks');
 
-        // Scroll class
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 60);
         }, { passive: true });
 
-        // Mobile toggle
         toggle.addEventListener('click', () => {
             toggle.classList.toggle('active');
             links.classList.toggle('active');
         });
 
-        // Close on link click
         links.querySelectorAll('a').forEach((a) => {
             a.addEventListener('click', () => {
                 toggle.classList.remove('active');
@@ -662,7 +652,7 @@
     }
 
     /* ----------------------------------------------------------
-       5. Smooth Scroll for Nav Links
+       5. Smooth Scroll
     ---------------------------------------------------------- */
     function setupSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -672,8 +662,7 @@
                 e.preventDefault();
                 const target = document.querySelector(href);
                 if (target) {
-                    const offset = 80;
-                    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    const top = target.getBoundingClientRect().top + window.scrollY - 80;
                     window.scrollTo({ top, behavior: 'smooth' });
                 }
             });
@@ -681,16 +670,11 @@
     }
 
     /* ----------------------------------------------------------
-       6. Loading Screen with Premium Lottie Support
+       6. Loading Screen
     ---------------------------------------------------------- */
     function createLoadingScreen() {
         const overlay = document.createElement('div');
         overlay.className = 'loading-overlay';
-        
-        // ----------------------------------------------------------------------
-        // NOTE: Please place your downloaded .json file inside the main "Demo Cafe" 
-        // folder and rename it to exactly "loader.json".
-        // ----------------------------------------------------------------------
         overlay.innerHTML = `
             <lottie-player 
                 class="lottie-loader"
@@ -706,7 +690,7 @@
     }
 
     /* ----------------------------------------------------------
-       Menu Flipbook (StPageFlip)
+       Menu Flipbook
     ---------------------------------------------------------- */
     function setupFlipbook() {
         const flipbookEl = document.getElementById('flipbook');
@@ -745,7 +729,9 @@
     }
 
     /* ----------------------------------------------------------
-       7. Init — Progressive loading strategy with Lottie sync
+       7. Init
+       ✅ FIX 6: Frames aur Loader PARALLEL start — zero time waste
+       ✅ FIX 7: Lottie failsafe 5s → 2.5s
     ---------------------------------------------------------- */
     async function init() {
         const loader = createLoadingScreen();
@@ -756,10 +742,9 @@
 
         let framesReady = false;
         let animationReady = false;
-        let isStarted = false; // Fix: Prevent multiple startup triggers!
+        let isStarted = false;
 
         function startSite() {
-            // Ensure we only start once, preventing exponential duplicates of renderLoop which causes severe lag
             if (framesReady && animationReady && !isStarted) {
                 isStarted = true;
                 drawFrame(0);
@@ -781,7 +766,12 @@
             }
         }
 
-        // Wait for at least one full animation loop to finish
+        // ✅ FIX 6: Frames IMMEDIATELY shuru — loader ke saath parallel
+        preloadFrames(() => {
+            framesReady = true;
+            startSite();
+        });
+
         if (player) {
             player.addEventListener('loopComplete', () => {
                 animationReady = true;
@@ -791,24 +781,17 @@
                 animationReady = true;
                 startSite();
             });
-            
-            // Failsafe (in case the Lottie fails to load or parse, wait maximum 5s)
+
+            // ✅ FIX 7: 5000ms → 2500ms failsafe
             setTimeout(() => {
                 if (!animationReady) {
                     animationReady = true;
                     startSite();
                 }
-            }, 5000); 
+            }, 2500);
         } else {
             animationReady = true;
         }
-
-        // onReady fires after first 30 frames
-        preloadFrames(() => {
-            framesReady = true;
-            startSite();
-        });
-        // Remaining 270 frames load silently in background
     }
 
     /* ----------------------------------------------------------
@@ -827,13 +810,12 @@
 
         if (!modal || !openBtn) return;
 
-        // Initialize premium flatpickr dates
         flatpickr("#resDate", {
             minDate: "today",
             dateFormat: "Y-m-d",
-            disableMobile: "true" // Keep premium dark picker even on mobile
+            disableMobile: "true"
         });
-        
+
         flatpickr("#resTime", {
             enableTime: true,
             noCalendar: true,
@@ -842,25 +824,21 @@
             disableMobile: "true"
         });
 
-        // ═══════════ EmailJS Config ═══════════
         const EMAILJS_PUBLIC_KEY = 'V7a1G-fJ-i4uwK2Qr';
         const EMAILJS_SERVICE_ID = 'service_z2nduaw';
         const EMAILJS_OWNER_TEMPLATE = 'template_93kbf0m';
         const EMAILJS_CUSTOMER_TEMPLATE = 'template_hs4lrz5';
 
-        // Initialize EmailJS
         if (typeof emailjs !== 'undefined') {
             emailjs.init(EMAILJS_PUBLIC_KEY);
         }
 
-        // Open modal
         openBtn.addEventListener('click', (e) => {
             e.preventDefault();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
 
-        // Close modal
         function closeModal() {
             modal.classList.remove('active');
             document.body.style.overflow = '';
@@ -874,7 +852,6 @@
             if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
         });
 
-        // Success/Error close buttons
         if (successCloseBtn) successCloseBtn.addEventListener('click', closeModal);
         if (errorRetryBtn) {
             errorRetryBtn.addEventListener('click', () => {
@@ -883,7 +860,6 @@
             });
         }
 
-        // Reset modal content on close transition end
         modal.addEventListener('transitionend', () => {
             if (!modal.classList.contains('active')) {
                 form.style.display = 'flex';
@@ -894,7 +870,6 @@
             }
         });
 
-        // Form submit
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -908,13 +883,11 @@
                 message: document.getElementById('resMessage').value.trim() || 'None'
             };
 
-            // Format date nicely
             const dateObj = new Date(data.date + 'T00:00:00');
             data.formatted_date = dateObj.toLocaleDateString('en-IN', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
             });
 
-            // Format time to 12h
             const [h, m] = data.time.split(':');
             const ampm = parseInt(h) >= 12 ? 'PM' : 'AM';
             data.formatted_time = ((parseInt(h) % 12) || 12) + ':' + m + ' ' + ampm;
@@ -922,26 +895,13 @@
             submitBtn.classList.add('loading');
 
             try {
-                if (typeof emailjs === 'undefined') {
-                    throw new Error('EmailJS library not loaded');
-                }
-
-                // Send owner notification
-                console.log('Sending owner email...');
+                if (typeof emailjs === 'undefined') throw new Error('EmailJS not loaded');
                 await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_OWNER_TEMPLATE, data);
-                console.log('Owner email sent ✓');
-
-                // Send customer confirmation
-                console.log('Sending customer email to:', data.email);
                 await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CUSTOMER_TEMPLATE, data);
-                console.log('Customer email sent ✓');
-
-                // Show success
                 form.style.display = 'none';
                 successEl.style.display = 'block';
             } catch (err) {
                 console.error('EmailJS Error:', err);
-                console.error('Error details:', JSON.stringify(err));
                 form.style.display = 'none';
                 errorEl.style.display = 'block';
             } finally {
@@ -951,7 +911,7 @@
     }
 
     /* ----------------------------------------------------------
-       Beverage Matchmaker Logic
+       Beverage Matchmaker
     ---------------------------------------------------------- */
     function setupMatchmaker() {
         const filters = document.querySelectorAll('.filter-btn');
@@ -965,8 +925,6 @@
         filters.forEach(btn => {
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
-                
-                // Toggle active state on button & set
                 if (activeFilters.has(filter)) {
                     activeFilters.delete(filter);
                     btn.classList.remove('active');
@@ -974,7 +932,6 @@
                     activeFilters.add(filter);
                     btn.classList.add('active');
                 }
-                
                 updateGrid();
             });
         });
@@ -983,7 +940,6 @@
             let matchesFound = 0;
 
             if (activeFilters.size === 0) {
-                // If nothing selected, hide everything and show prompt
                 cards.forEach(card => card.classList.add('hidden'));
                 emptyState.classList.remove('hidden');
                 return;
@@ -993,9 +949,6 @@
 
             cards.forEach(card => {
                 const tags = card.dataset.tags.split(',');
-                // Check if card has ALL selected filters (AND logic) or ANY (OR logic).
-                // "Help Me Choose" usually works best if they select multiple, they want something that matches as many as possible, but let's use OR logic so it feels generous, OR strict AND logic.
-                // Strict AND logic is more "customized". Let's do AND logic: card must have every active filter.
                 let matchesAll = true;
                 activeFilters.forEach(f => {
                     if (!tags.includes(f)) matchesAll = false;
@@ -1019,7 +972,7 @@
     }
 
     /* ----------------------------------------------------------
-       Ambient Audio Toggle Logic
+       Ambient Audio
     ---------------------------------------------------------- */
     function setupAudio() {
         const audio = document.getElementById('ambientAudio');
@@ -1029,14 +982,10 @@
 
         toggleBtn.addEventListener('click', () => {
             if (audio.paused) {
-                // Play audio
                 audio.play().then(() => {
                     toggleBtn.classList.add('playing');
-                }).catch(err => {
-                    console.log('Audio playback prevented:', err);
-                });
+                }).catch(err => console.log('Audio blocked:', err));
             } else {
-                // Pause audio
                 audio.pause();
                 toggleBtn.classList.remove('playing');
             }
